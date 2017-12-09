@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -86,7 +87,7 @@ public class Siren {
         // visible for testing
     }
 
-    public void checkVersion(Activity activity, SirenVersionCheckType versionCheckType, String appDescriptionUrl) {
+    public void checkVersion(Activity activity, SirenVersionCheckType versionCheckType, String appDescriptionUrl,Map<String, String> httpParams) {
 
         mActivityRef = new WeakReference<>(activity);
 
@@ -96,10 +97,10 @@ public class Siren {
         }
 
         if (versionCheckType == SirenVersionCheckType.IMMEDIATELY) {
-            performVersionCheck(appDescriptionUrl);
+            performVersionCheck(appDescriptionUrl,httpParams);
         } else if (versionCheckType.getValue() <= getSirenHelper().getDaysSinceLastCheck(mApplicationContext)
                 ||getSirenHelper().getLastVerificationDate(mApplicationContext) == 0) {
-            performVersionCheck(appDescriptionUrl);
+            performVersionCheck(appDescriptionUrl,httpParams);
         }
     }
 
@@ -132,8 +133,8 @@ public class Siren {
     }
 
     @VisibleForTesting
-    protected void performVersionCheck(String appDescriptionUrl) {
-        new LoadJsonTask().execute(appDescriptionUrl);
+    protected void performVersionCheck(String appDescriptionUrl,Map<String, String> httpParams) {
+        new LoadJsonTask().execute(appDescriptionUrl,httpParams);
     }
 
     @VisibleForTesting
@@ -276,20 +277,26 @@ public class Siren {
         }
     }
 
-    private static class LoadJsonTask extends AsyncTask<String, Void, String> {
+    private static class LoadJsonTask extends AsyncTask<Object, Void, String> {
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(Object... params) {
             HttpURLConnection connection = null;
             try {
                 TLSSocketFactory TLSSocketFactory = new TLSSocketFactory();
-                URL url = new URL(params[0]);
+                URL url = new URL((String) params[0]);
+                Map<String, String> httpParams = (Map<String, String>) params[1];
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setUseCaches(false);
                 connection.setAllowUserInteraction(false);
                 connection.setConnectTimeout(10000);
                 connection.setReadTimeout(10000);
+
+                for (Map.Entry entry : httpParams.entrySet()){
+                    connection.addRequestProperty((String) entry.getKey(),(String) entry.getValue());
+                }
+
                 if ("https".equalsIgnoreCase(url.getProtocol())) {
                     ((HttpsURLConnection)connection).setSSLSocketFactory(TLSSocketFactory);
                 }
