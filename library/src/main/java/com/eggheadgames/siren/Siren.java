@@ -87,6 +87,9 @@ public class Siren {
         // visible for testing
     }
 
+    public void checkVersion(Activity activity, SirenVersionCheckType versionCheckType, String appDescriptionUrl) {
+        checkVersion(activity,versionCheckType,appDescriptionUrl,null);
+    }
     public void checkVersion(Activity activity, SirenVersionCheckType versionCheckType, String appDescriptionUrl,Map<String, String> httpParams) {
 
         mActivityRef = new WeakReference<>(activity);

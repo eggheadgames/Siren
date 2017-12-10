@@ -109,7 +109,7 @@ public class SirenTest {
 
     @Test
     public void onEmptyJsonUrl_verificationShouldNotBePerformed() {
-        siren.checkVersion(activity, SirenVersionCheckType.IMMEDIATELY, "",httpParams);
+        siren.checkVersion(activity, SirenVersionCheckType.IMMEDIATELY, "");
         Mockito.verify(siren, Mockito.never()).performVersionCheck(Mockito.anyString(),Mockito.anyMapOf(String.class,String.class));
     }
 
