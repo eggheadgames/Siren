@@ -296,8 +296,10 @@ public class Siren {
                 connection.setConnectTimeout(10000);
                 connection.setReadTimeout(10000);
 
-                for (Map.Entry entry : httpParams.entrySet()){
-                    connection.addRequestProperty((String) entry.getKey(),(String) entry.getValue());
+                if (httpParams != null){
+                    for (Map.Entry entry : httpParams.entrySet()){
+                        connection.addRequestProperty((String) entry.getKey(),(String) entry.getValue());
+                    }
                 }
 
                 if ("https".equalsIgnoreCase(url.getProtocol())) {
