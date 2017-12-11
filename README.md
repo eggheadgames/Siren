@@ -189,6 +189,34 @@ You may want the update dialog to always appear in a certain language, ignoring 
     Siren.setLanguageLocalization(SirenSupportedLocales.FR)
 ```
 
+## Support for HTTP Headers:
+
+If you have more than one supported APK in production based on the min supported API Level, you may want to send a different response from the server for the different version of the app for the same URL. you can add few HTTP header to installed version and get the appropriate data for that version from the server.
+
+Example for App version 3.x.y with API level 11 and above
+```java
+        Map<String, String> httpParams = new HashMap<String, String>();
+        httpParams.put("appVersion","3.15.4");
+        siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL,httpParams);
+```
+Response from server
+
+```json
+{ "com.example.app": { "minVersionName": "3.8.2" } }
+```
+
+Example for App version 4.x.y with API level 16 and above
+```java
+        Map<String, String> httpParams = new HashMap<String, String>();
+        httpParams.put("appVersion","4.20.4");
+        siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL,httpParams);
+```
+Response from server
+
+```json
+{ "com.example.app": { "minVersionName": "4.12.2" } }
+```
+
 ## Testing Siren
 
 Change the url in your app to point to a test location (e.g. http://myjson.com/ is a convenient test site). Create an appropriate file and run your app with the temporary url.
