@@ -191,12 +191,13 @@ You may want the update dialog to always appear in a certain language, ignoring 
 
 ## Support for HTTP Headers:
 
-If you have more than one supported APK in production based on the min supported API Level, you may want to send a different response from the server for the different version of the app for the same URL. you can add few HTTP header to installed version and get the appropriate data for that version from the server.
+If you have more than one supported APK in production based on the min supported API Level, you may want to send a different response from the server for the different version of the app for the same URL. you can add few HTTP header to installed version and get the appropriate data for that version from the server. If you have a paid app and a free app as different product flavours with same code base. You can pass the application name as a header and backend server will send return correct response for that app.
 
-Example for App version 3.x.y with API level 11 and above
+Example for App 'com.example.app' with app version 3.x.y with API level 11 and above
 ```java
         Map<String, String> httpParams = new HashMap<String, String>();
         httpParams.put("appVersion","3.15.4");
+        httpParams.put("appName","com.example.app");
         siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL,httpParams);
 ```
 Response from server
@@ -204,6 +205,20 @@ Response from server
 ```json
 { "com.example.app": { "minVersionName": "3.8.2" } }
 ```
+
+Example for App 'com.example.app.paid' with app version 3.x.y with API level 11 and above
+```java
+        Map<String, String> httpParams = new HashMap<String, String>();
+        httpParams.put("appVersion","3.11.4");
+        httpParams.put("appName","com.example.app.paid");
+        siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL,httpParams);
+```
+Response from server
+
+```json
+{ "com.example.app.paid": { "minVersionName": "3.10.1" } }
+```
+
 
 Example for App version 4.x.y with API level 16 and above
 ```java
