@@ -167,9 +167,9 @@ public class Siren {
     }
 
     @VisibleForTesting
-    protected SirenAlertWrapper getAlertWrapper(SirenAlertType alertType, String appVersion) {
+    protected SirenAlertWrapper getAlertWrapper(SirenAlertType alertType, String appVersion, String message) {
         Activity activity = mActivityRef.get();
-        return new SirenAlertWrapper(activity, mSirenListener, alertType, appVersion, forceLanguageLocalization, getSirenHelper());
+        return new SirenAlertWrapper(activity, mSirenListener, alertType, appVersion, forceLanguageLocalization, getSirenHelper(),message);
     }
 
     protected SirenHelper getSirenHelper() {
@@ -190,6 +190,7 @@ public class Siren {
 
         // If no config found, assume force update = false
         Boolean forceUpdateEnabled = appJson.has(Constants.JSON_FORCE_ALERT_TYPE) ? appJson.getBoolean(Constants.JSON_FORCE_ALERT_TYPE) : false;
+        String message = appJson.has(Constants.JSON_MESSAGE) ? appJson.getString(Constants.JSON_MESSAGE) : null;
         String minVersionName = appJson.getString(Constants.JSON_MIN_VERSION_NAME);
         String currentVersionName = getSirenHelper().getVersionName(mApplicationContext);
 
@@ -227,7 +228,7 @@ public class Siren {
             }
 
             if (versionUpdateDetected) {
-                showAlert(minVersionName, alertType);
+                showAlert(minVersionName, alertType,message);
                 return true;
             }
         }
@@ -257,26 +258,27 @@ public class Siren {
 
             // If no config found, assume force update = false
             Boolean forceUpdateEnabled = appJson.has(Constants.JSON_FORCE_ALERT_TYPE) ? appJson.getBoolean(Constants.JSON_FORCE_ALERT_TYPE) : false;
+            String message = appJson.has(Constants.JSON_MESSAGE) ? appJson.getString(Constants.JSON_MESSAGE) : null;
 
             //save last successful verification date
             getSirenHelper().setLastVerificationDate(mApplicationContext);
 
             if (getSirenHelper().getVersionCode(mApplicationContext) < minAppVersionCode
                     && !getSirenHelper().isVersionSkippedByUser(mApplicationContext, String.valueOf(minAppVersionCode))) {
-                showAlert(String.valueOf(minAppVersionCode), forceUpdateEnabled ? SirenAlertType.FORCE : versionCodeUpdateAlertType);
+                showAlert(String.valueOf(minAppVersionCode), forceUpdateEnabled ? SirenAlertType.FORCE : versionCodeUpdateAlertType,message);
                 return true;
             }
         }
         return false;
     }
 
-    private void showAlert(String appVersion, SirenAlertType alertType) {
+    private void showAlert(String appVersion, SirenAlertType alertType, String message) {
         if (alertType == SirenAlertType.NONE) {
             if (mSirenListener != null) {
-                mSirenListener.onDetectNewVersionWithoutAlert(getSirenHelper().getAlertMessage(mApplicationContext, appVersion, forceLanguageLocalization));
+                mSirenListener.onDetectNewVersionWithoutAlert(getSirenHelper().getAlertMessage(mApplicationContext, appVersion, forceLanguageLocalization,message));
             }
         } else {
-            getAlertWrapper(alertType, appVersion).show();
+            getAlertWrapper(alertType, appVersion,message).show();
         }
     }
 
