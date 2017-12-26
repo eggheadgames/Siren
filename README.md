@@ -231,6 +231,22 @@ Response from server
 ```json
 { "com.example.app": { "minVersionName": "4.12.2" } }
 ```
+## custom message from server.
+
+You can not send custom message server side. e.g if the user language is currently not supported by library, you can send the message from server.
+
+Example you want to display a message in Hindi or any other language, the app can send the language it is expecting as a header parameter and server can send the response in the requested landuage.
+```java
+        Map<String, String> httpParams = new HashMap<String, String>();
+        httpParams.put("appVersion","4.20.4");
+        httpParams.put("lang","hindi");
+        siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL,httpParams);
+```
+Response from server
+
+```json
+{ "com.example.app": { "minVersionName": "4.12.2","message" : "कृपया नवीनतम वर्शन में ऐप अपडेट करें" } }
+```
 
 ## Testing Siren
 
