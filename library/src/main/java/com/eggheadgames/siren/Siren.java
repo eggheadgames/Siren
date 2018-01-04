@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -87,6 +88,9 @@ public class Siren {
     }
 
     public void checkVersion(Activity activity, SirenVersionCheckType versionCheckType, String appDescriptionUrl) {
+        checkVersion(activity,versionCheckType,appDescriptionUrl,null);
+    }
+    public void checkVersion(Activity activity, SirenVersionCheckType versionCheckType, String appDescriptionUrl,Map<String, String> httpParams) {
 
         mActivityRef = new WeakReference<>(activity);
 
@@ -96,10 +100,10 @@ public class Siren {
         }
 
         if (versionCheckType == SirenVersionCheckType.IMMEDIATELY) {
-            performVersionCheck(appDescriptionUrl);
+            performVersionCheck(appDescriptionUrl,httpParams);
         } else if (versionCheckType.getValue() <= getSirenHelper().getDaysSinceLastCheck(mApplicationContext)
                 ||getSirenHelper().getLastVerificationDate(mApplicationContext) == 0) {
-            performVersionCheck(appDescriptionUrl);
+            performVersionCheck(appDescriptionUrl,httpParams);
         }
     }
 
@@ -132,8 +136,8 @@ public class Siren {
     }
 
     @VisibleForTesting
-    protected void performVersionCheck(String appDescriptionUrl) {
-        new LoadJsonTask().execute(appDescriptionUrl);
+    protected void performVersionCheck(String appDescriptionUrl,Map<String, String> httpParams) {
+        new LoadJsonTask().execute(appDescriptionUrl,httpParams);
     }
 
     @VisibleForTesting
@@ -163,9 +167,9 @@ public class Siren {
     }
 
     @VisibleForTesting
-    protected SirenAlertWrapper getAlertWrapper(SirenAlertType alertType, String appVersion) {
+    protected SirenAlertWrapper getAlertWrapper(SirenAlertType alertType, String appVersion, String message) {
         Activity activity = mActivityRef.get();
-        return new SirenAlertWrapper(activity, mSirenListener, alertType, appVersion, forceLanguageLocalization, getSirenHelper());
+        return new SirenAlertWrapper(activity, mSirenListener, alertType, appVersion, forceLanguageLocalization, getSirenHelper(),message);
     }
 
     protected SirenHelper getSirenHelper() {
@@ -186,6 +190,7 @@ public class Siren {
 
         // If no config found, assume force update = false
         Boolean forceUpdateEnabled = appJson.has(Constants.JSON_FORCE_ALERT_TYPE) ? appJson.getBoolean(Constants.JSON_FORCE_ALERT_TYPE) : false;
+        String message = appJson.has(Constants.JSON_MESSAGE) ? appJson.getString(Constants.JSON_MESSAGE) : null;
         String minVersionName = appJson.getString(Constants.JSON_MIN_VERSION_NAME);
         String currentVersionName = getSirenHelper().getVersionName(mApplicationContext);
 
@@ -223,7 +228,7 @@ public class Siren {
             }
 
             if (versionUpdateDetected) {
-                showAlert(minVersionName, alertType);
+                showAlert(minVersionName, alertType,message);
                 return true;
             }
         }
@@ -253,43 +258,52 @@ public class Siren {
 
             // If no config found, assume force update = false
             Boolean forceUpdateEnabled = appJson.has(Constants.JSON_FORCE_ALERT_TYPE) ? appJson.getBoolean(Constants.JSON_FORCE_ALERT_TYPE) : false;
+            String message = appJson.has(Constants.JSON_MESSAGE) ? appJson.getString(Constants.JSON_MESSAGE) : null;
 
             //save last successful verification date
             getSirenHelper().setLastVerificationDate(mApplicationContext);
 
             if (getSirenHelper().getVersionCode(mApplicationContext) < minAppVersionCode
                     && !getSirenHelper().isVersionSkippedByUser(mApplicationContext, String.valueOf(minAppVersionCode))) {
-                showAlert(String.valueOf(minAppVersionCode), forceUpdateEnabled ? SirenAlertType.FORCE : versionCodeUpdateAlertType);
+                showAlert(String.valueOf(minAppVersionCode), forceUpdateEnabled ? SirenAlertType.FORCE : versionCodeUpdateAlertType,message);
                 return true;
             }
         }
         return false;
     }
 
-    private void showAlert(String appVersion, SirenAlertType alertType) {
+    private void showAlert(String appVersion, SirenAlertType alertType, String message) {
         if (alertType == SirenAlertType.NONE) {
             if (mSirenListener != null) {
-                mSirenListener.onDetectNewVersionWithoutAlert(getSirenHelper().getAlertMessage(mApplicationContext, appVersion, forceLanguageLocalization));
+                mSirenListener.onDetectNewVersionWithoutAlert(getSirenHelper().getAlertMessage(mApplicationContext, appVersion, forceLanguageLocalization,message));
             }
         } else {
-            getAlertWrapper(alertType, appVersion).show();
+            getAlertWrapper(alertType, appVersion,message).show();
         }
     }
 
-    private static class LoadJsonTask extends AsyncTask<String, Void, String> {
+    private static class LoadJsonTask extends AsyncTask<Object, Void, String> {
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(Object... params) {
             HttpURLConnection connection = null;
             try {
                 TLSSocketFactory TLSSocketFactory = new TLSSocketFactory();
-                URL url = new URL(params[0]);
+                URL url = new URL((String) params[0]);
+                Map<String, String> httpParams = (Map<String, String>) params[1];
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setUseCaches(false);
                 connection.setAllowUserInteraction(false);
                 connection.setConnectTimeout(10000);
                 connection.setReadTimeout(10000);
+
+                if (httpParams != null){
+                    for (Map.Entry entry : httpParams.entrySet()){
+                        connection.addRequestProperty((String) entry.getKey(),(String) entry.getValue());
+                    }
+                }
+
                 if ("https".equalsIgnoreCase(url.getProtocol())) {
                     ((HttpsURLConnection)connection).setSSLSocketFactory(TLSSocketFactory);
                 }

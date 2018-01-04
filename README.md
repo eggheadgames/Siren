@@ -189,6 +189,65 @@ You may want the update dialog to always appear in a certain language, ignoring 
     Siren.setLanguageLocalization(SirenSupportedLocales.FR)
 ```
 
+## Support for HTTP Headers:
+
+If you have more than one supported APK in production based on the min supported API Level, you may want to send a different response from the server for the different version of the app for the same URL. you can add few HTTP header to installed version and get the appropriate data for that version from the server. If you have a paid app and a free app as different product flavors with the same code base. You can pass the application name as a header and backend server will send return correct response to that app.
+
+Example for App 'com.example.app' with app version 3.x.y with API level 11 and above
+```java
+        Map<String, String> httpParams = new HashMap<String, String>();
+        httpParams.put("appVersion","3.15.4");
+        httpParams.put("appName","com.example.app");
+        siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL,httpParams);
+```
+Response from server
+
+```json
+{ "com.example.app": { "minVersionName": "3.8.2" } }
+```
+
+Example for App 'com.example.app.paid' with app version 3.x.y with API level 11 and above
+```java
+        Map<String, String> httpParams = new HashMap<String, String>();
+        httpParams.put("appVersion","3.11.4");
+        httpParams.put("appName","com.example.app.paid");
+        siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL,httpParams);
+```
+Response from server
+
+```json
+{ "com.example.app.paid": { "minVersionName": "3.10.1" } }
+```
+
+
+Example for App version 4.x.y with API level 16 and above
+```java
+        Map<String, String> httpParams = new HashMap<String, String>();
+        httpParams.put("appVersion","4.20.4");
+        siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL,httpParams);
+```
+Response from server
+
+```json
+{ "com.example.app": { "minVersionName": "4.12.2" } }
+```
+## custom message from server.
+
+You can send custom message server side. e.g if the user language is currently not supported by the library, you can send the message from the server.
+
+Example you want to display a message in Hindi or any other language, the app can send the language it is expecting as a header parameter and server can send the response in the requested landuage.
+```java
+        Map<String, String> httpParams = new HashMap<String, String>();
+        httpParams.put("appVersion","4.20.4");
+        httpParams.put("lang","hindi");
+        siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL,httpParams);
+```
+Response from server
+
+```json
+{ "com.example.app": { "minVersionName": "4.12.2","message" : "कृपया नवीनतम वर्शन में ऐप अपडेट करें" } }
+```
+
 ## Testing Siren
 
 Change the url in your app to point to a test location (e.g. http://myjson.com/ is a convenient test site). Create an appropriate file and run your app with the temporary url.
