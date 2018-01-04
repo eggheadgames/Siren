@@ -191,7 +191,7 @@ You may want the update dialog to always appear in a certain language, ignoring 
 
 ## Support for HTTP Headers:
 
-If you have more than one supported APK in production based on the min supported API Level, you may want to send a different response from the server for the different version of the app for the same URL. you can add few HTTP header to installed version and get the appropriate data for that version from the server. If you have a paid app and a free app as different product flavours with same code base. You can pass the application name as a header and backend server will send return correct response for that app.
+If you have more than one supported APK in production based on the min supported API Level, you may want to send a different response from the server for the different version of the app for the same URL. you can add few HTTP header to installed version and get the appropriate data for that version from the server. If you have a paid app and a free app as different product flavors with the same code base. You can pass the application name as a header and backend server will send return correct response to that app.
 
 Example for App 'com.example.app' with app version 3.x.y with API level 11 and above
 ```java
@@ -233,7 +233,7 @@ Response from server
 ```
 ## custom message from server.
 
-You can not send custom message server side. e.g if the user language is currently not supported by library, you can send the message from server.
+You can send custom message server side. e.g if the user language is currently not supported by the library, you can send the message from the server.
 
 Example you want to display a message in Hindi or any other language, the app can send the language it is expecting as a header parameter and server can send the response in the requested landuage.
 ```java
