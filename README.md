@@ -189,6 +189,20 @@ You may want the update dialog to always appear in a certain language, ignoring 
     Siren.setLanguageLocalization(SirenSupportedLocales.FR)
 ```
 
+## custom message from server.
+
+You can send custom message server side. e.g if the user language is currently not supported by the library, you can send the message from the server.
+
+Example you want to display a message in Hindi or any other languageserver can send the response in the required language.
+```java
+        siren.checkVersion(this, SirenVersionCheckType.IMMEDIATELY, SIREN_JSON_DOCUMENT_URL);
+```
+Response from server
+
+```json
+{ "com.example.app": { "minVersionName": "4.12.2","message" : "कृपया नवीनतम वर्शन में ऐप अपडेट करें" } }
+```
+
 ## Testing Siren
 
 Change the url in your app to point to a test location (e.g. http://myjson.com/ is a convenient test site). Create an appropriate file and run your app with the temporary url.

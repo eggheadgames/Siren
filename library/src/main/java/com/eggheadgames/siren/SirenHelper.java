@@ -75,6 +75,14 @@ class SirenHelper {
     }
 
     @NonNull
+    String getAlertMessage(Context context, String minAppVersion, SirenSupportedLocales locale, String message) {
+        if (message != null && !message.isEmpty()){
+            return message;
+        }
+        return getAlertMessage(context,minAppVersion,locale);
+    }
+
+    @NonNull
     String getAlertMessage(Context context, String minAppVersion, SirenSupportedLocales locale) {
         try {
             if (context.getApplicationInfo().labelRes == 0) {
