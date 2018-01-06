@@ -191,7 +191,7 @@ You may want the update dialog to always appear in a certain language, ignoring 
 
 ## custom message from server.
 
-You can send custom message server side. e.g if the user language is currently not supported by the library, you can send the message from the server.
+You can send a custom message from the server side. e.g if the user language is currently not supported by the library, you can send the message from the server.
 
 Example you want to display a message in Hindi or any other language. Server can send the response in the required language.
 ```java
