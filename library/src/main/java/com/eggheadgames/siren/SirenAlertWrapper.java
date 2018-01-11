@@ -34,7 +34,7 @@ public class SirenAlertWrapper {
 
     public SirenAlertWrapper(Activity activity, ISirenListener sirenListener, SirenAlertType sirenAlertType,
                              String minAppVersion, SirenSupportedLocales locale, SirenHelper sirenHelper) {
-        this(activity, sirenListener, sirenAlertType, minAppVersion, locale, sirenHelper,null);
+        this(activity, sirenListener, sirenAlertType, minAppVersion, locale, sirenHelper, null);
     }
 
     public void show() {
@@ -80,7 +80,7 @@ public class SirenAlertWrapper {
         nextTime.setText(mSirenHelper.getLocalizedString(mActivityRef.get(), R.string.next_time, mLocale));
         skip.setText(mSirenHelper.getLocalizedString(mActivityRef.get(), R.string.skip_this_version, mLocale));
 
-        message.setText(mSirenHelper.getAlertMessage(mActivityRef.get(), mMinAppVersion, mLocale,mMessage));
+        message.setText(mSirenHelper.getAlertMessage(mActivityRef.get(), mMinAppVersion, mLocale, mMessage));
 
         if (mSirenAlertType == SirenAlertType.FORCE
                 || mSirenAlertType == SirenAlertType.OPTION

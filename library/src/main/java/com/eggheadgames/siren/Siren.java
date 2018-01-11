@@ -165,7 +165,7 @@ public class Siren {
     @VisibleForTesting
     protected SirenAlertWrapper getAlertWrapper(SirenAlertType alertType, String appVersion, String message) {
         Activity activity = mActivityRef.get();
-        return new SirenAlertWrapper(activity, mSirenListener, alertType, appVersion, forceLanguageLocalization, getSirenHelper(),message);
+        return new SirenAlertWrapper(activity, mSirenListener, alertType, appVersion, forceLanguageLocalization, getSirenHelper(), message);
     }
 
     protected SirenHelper getSirenHelper() {
@@ -224,7 +224,7 @@ public class Siren {
             }
 
             if (versionUpdateDetected) {
-                showAlert(minVersionName, alertType,message);
+                showAlert(minVersionName, alertType, message);
                 return true;
             }
         }
@@ -261,7 +261,7 @@ public class Siren {
 
             if (getSirenHelper().getVersionCode(mApplicationContext) < minAppVersionCode
                     && !getSirenHelper().isVersionSkippedByUser(mApplicationContext, String.valueOf(minAppVersionCode))) {
-                showAlert(String.valueOf(minAppVersionCode), forceUpdateEnabled ? SirenAlertType.FORCE : versionCodeUpdateAlertType,message);
+                showAlert(String.valueOf(minAppVersionCode), forceUpdateEnabled ? SirenAlertType.FORCE : versionCodeUpdateAlertType, message);
                 return true;
             }
         }
@@ -271,10 +271,10 @@ public class Siren {
     private void showAlert(String appVersion, SirenAlertType alertType, String message) {
         if (alertType == SirenAlertType.NONE) {
             if (mSirenListener != null) {
-                mSirenListener.onDetectNewVersionWithoutAlert(getSirenHelper().getAlertMessage(mApplicationContext, appVersion, forceLanguageLocalization,message));
+                mSirenListener.onDetectNewVersionWithoutAlert(getSirenHelper().getAlertMessage(mApplicationContext, appVersion, forceLanguageLocalization, message));
             }
         } else {
-            getAlertWrapper(alertType, appVersion,message).show();
+            getAlertWrapper(alertType, appVersion, message).show();
         }
     }
 
