@@ -24,4 +24,5 @@ interface TestConstants {
 
     String jsonVersionCheckDisabled = "{\"com.example.app\":{\"minVersionName\":\"2.1.1.1\", \"enable\": false}}";
     String jsonForceUpdateEnabled = "{\"com.example.app\":{\"minVersionName\":\"2.1.1.1\", \"force\": true}}";
+    String jsonCustomMessage = "{\"com.example.app\":{\"minVersionName\":\"2.1.1.1\", \"message\": \"This is custom message\"}}";
 }

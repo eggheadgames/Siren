@@ -35,6 +35,7 @@ public class SirenTest {
         alertWrapper = Mockito.spy(new SirenAlertWrapper(null, null, null, null, null, null));
         //Mock SirenHelper class
         Mockito.when(sirenHelper.getAlertMessage(Mockito.any(Context.class), Mockito.anyString(), Mockito.any(SirenSupportedLocales.class))).thenReturn("");
+        Mockito.when(sirenHelper.getAlertMessage(Mockito.any(Context.class), Mockito.anyString(), Mockito.any(SirenSupportedLocales.class), Mockito.anyString())).thenReturn("");
         Mockito.when(sirenHelper.getDaysSinceLastCheck(activity)).thenReturn(0);
         Mockito.when(sirenHelper.getLocalizedString(Mockito.any(Context.class), Mockito.anyInt(), Mockito.any(SirenSupportedLocales.class))).thenReturn("");
         Mockito.when(sirenHelper.getPackageName(activity)).thenReturn(TestConstants.appPackageName);
@@ -317,5 +318,16 @@ public class SirenTest {
         siren.checkVersion(activity, SirenVersionCheckType.IMMEDIATELY, APP_DESCRIPTION_URL);
 
         Mockito.verify(siren).getAlertWrapper(eq(SirenAlertType.FORCE), Mockito.anyString(), Mockito.anyString());
+    }
+
+    @Test
+    public void onMessageNode_shouldShowCustomMessage() {
+        mockResult(TestConstants.jsonCustomMessage);
+        Mockito.when(sirenHelper.getVersionName(activity)).thenReturn(TestConstants.appVersionNameTest);
+
+        siren.checkVersion(activity, SirenVersionCheckType.IMMEDIATELY, APP_DESCRIPTION_URL);
+
+        Mockito.verify(siren).getAlertWrapper(eq(SirenAlertType.OPTION), Mockito.anyString(), Mockito.anyString());
+
     }
 }
