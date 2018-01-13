@@ -189,6 +189,16 @@ You may want the update dialog to always appear in a certain language, ignoring 
     Siren.setLanguageLocalization(SirenSupportedLocales.FR)
 ```
 
+## custom message from server.
+
+You can send a custom message from the server side.
+
+Response from server
+
+```json
+{ "com.example.app": { "minVersionName": "4.12.2","message" : "Please update as this version will stop working" } }
+```
+
 ## Testing Siren
 
 Change the url in your app to point to a test location (e.g. http://myjson.com/ is a convenient test site). Create an appropriate file and run your app with the temporary url.

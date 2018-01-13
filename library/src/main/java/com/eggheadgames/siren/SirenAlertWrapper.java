@@ -17,19 +17,25 @@ public class SirenAlertWrapper {
     private final ISirenListener mSirenListener;
     private final SirenAlertType mSirenAlertType;
     private final String mMinAppVersion;
+    private final String mMessage;
     private final SirenSupportedLocales mLocale;
     private final SirenHelper mSirenHelper;
 
     public SirenAlertWrapper(Activity activity, ISirenListener sirenListener, SirenAlertType sirenAlertType,
-                             String minAppVersion, SirenSupportedLocales locale, SirenHelper sirenHelper) {
+                             String minAppVersion, SirenSupportedLocales locale, SirenHelper sirenHelper, String mMessage) {
         this.mSirenListener = sirenListener;
         this.mSirenAlertType = sirenAlertType;
         this.mMinAppVersion = minAppVersion;
         this.mLocale = locale;
         this.mSirenHelper = sirenHelper;
         this.mActivityRef = new WeakReference<>(activity);
+        this.mMessage = mMessage;
     }
 
+    public SirenAlertWrapper(Activity activity, ISirenListener sirenListener, SirenAlertType sirenAlertType,
+                             String minAppVersion, SirenSupportedLocales locale, SirenHelper sirenHelper) {
+        this(activity, sirenListener, sirenAlertType, minAppVersion, locale, sirenHelper, null);
+    }
 
     public void show() {
         Activity activity = mActivityRef.get();
@@ -74,7 +80,7 @@ public class SirenAlertWrapper {
         nextTime.setText(mSirenHelper.getLocalizedString(mActivityRef.get(), R.string.next_time, mLocale));
         skip.setText(mSirenHelper.getLocalizedString(mActivityRef.get(), R.string.skip_this_version, mLocale));
 
-        message.setText(mSirenHelper.getAlertMessage(mActivityRef.get(), mMinAppVersion, mLocale));
+        message.setText(mSirenHelper.getAlertMessage(mActivityRef.get(), mMinAppVersion, mLocale, mMessage));
 
         if (mSirenAlertType == SirenAlertType.FORCE
                 || mSirenAlertType == SirenAlertType.OPTION
