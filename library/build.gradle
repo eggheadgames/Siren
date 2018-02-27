@@ -30,8 +30,8 @@ android {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:1.10.19'
-    testImplementation 'org.json:json:20160212'
+    api 'org.mockito:mockito-core:1.10.19'
+    api 'org.json:json:20160212'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency
