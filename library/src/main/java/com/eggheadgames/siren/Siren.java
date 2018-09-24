@@ -2,11 +2,17 @@ package com.eggheadgames.siren;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -103,6 +109,19 @@ public class Siren {
         }
     }
 
+
+    public void checkVersion(Activity activity, SirenVersionCheckType versionCheckType) {
+
+        mActivityRef = new WeakReference<>(activity);
+
+        if (versionCheckType == SirenVersionCheckType.IMMEDIATELY) {
+            performVersionCheck();
+        } else if (versionCheckType.getValue() <= getSirenHelper().getDaysSinceLastCheck(mApplicationContext)
+            ||getSirenHelper().getLastVerificationDate(mApplicationContext) == 0) {
+            performVersionCheck();
+        }
+    }
+
     public void setMajorUpdateAlertType(@SuppressWarnings("SameParameterValue") SirenAlertType majorUpdateAlertType) {
         this.majorUpdateAlertType = majorUpdateAlertType;
     }
@@ -134,6 +153,11 @@ public class Siren {
     @VisibleForTesting
     protected void performVersionCheck(String appDescriptionUrl) {
         new LoadJsonTask().execute(appDescriptionUrl);
+    }
+
+    @VisibleForTesting
+    protected void performVersionCheck() {
+        new LoadVersionFromGooglePlayStoreTask().execute();
     }
 
     @VisibleForTesting
@@ -196,6 +220,7 @@ public class Siren {
         SirenAlertType alertType = null;
         String[] minVersionNumbers = minVersionName.split("\\.");
         String[] currentVersionNumbers = currentVersionName.split("\\.");
+
         //noinspection ConstantConditions
         if (minVersionNumbers != null && currentVersionNumbers != null
                 && minVersionNumbers.length == currentVersionNumbers.length) {
@@ -346,6 +371,53 @@ public class Siren {
                 }
             } else {
                 Siren.sirenInstance.handleVerificationResults(result);
+            }
+        }
+    }
+
+    private static class LoadVersionFromGooglePlayStoreTask extends AsyncTask<Void, Void, String> {
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            String newVersion = null;
+            String packageName = Siren.sirenInstance.getSirenHelper().getPackageName(Siren.sirenInstance.mApplicationContext);
+
+            try {
+                Document document = Jsoup.connect("https://play.google.com/store/apps/details?id=" + packageName + "&hl=en")
+                    .timeout(30000)
+                    .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                    .referrer("http://www.google.com")
+                    .get();
+                if (document != null) {
+                    Elements element = document.getElementsContainingOwnText("Current Version");
+                    for (Element ele : element) {
+                        if (ele.siblingElements() != null) {
+                            Elements sibElemets = ele.siblingElements();
+                            for (Element sibElemet : sibElemets) {
+                                newVersion = sibElemet.text();
+                            }
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return newVersion;
+        }
+
+        @Override
+        protected void onPostExecute(String newVersion) {
+            super.onPostExecute(newVersion);
+
+            if (Siren.sirenInstance.getSirenHelper().isEmpty(newVersion)) {
+                if (Siren.sirenInstance.mSirenListener != null) {
+                    Siren.sirenInstance.mSirenListener.onError(new NullPointerException());
+                }
+            } else {
+                String packageName = Siren.sirenInstance.getSirenHelper().getPackageName(Siren.sirenInstance.mApplicationContext);
+                String jsonString = "{ \"" + packageName + "\": { \"" + Constants.JSON_MIN_VERSION_NAME +"\": \"" + newVersion + "\" } }";
+                Siren.sirenInstance.handleVerificationResults(jsonString);
             }
         }
     }
