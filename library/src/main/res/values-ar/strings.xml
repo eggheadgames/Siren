@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="update_alert_message" formatted="false" tools:ignore="StringFormatInvalid">.نسخة جديدة من %s متوفرة. الرجاء التجديد إلى نسخة رقم %s الآن</string>
-    <string name="update_available">التجديد متوفر</string>
-    <string name="update">تجديد</string>
-    <string name="next_time">المرة التالية</string>
-    <string name="skip_this_version">تخطى عن هذه النسخة</string>
+    <string name="update_alert_message" formatted="false" tools:ignore="StringFormatInvalid">.نسخة جديدة من %s متوفرة. الرجاء التحديث إلى نسخة رقم %s الآن</string>
+    <string name="update_available">تحديث متوفر</string>
+    <string name="update">تحديث</string>
+    <string name="next_time">المرة القادمة</string>
+    <string name="skip_this_version">تخطى هذه النسخة</string>
 </resources>
