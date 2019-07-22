@@ -68,7 +68,7 @@ Add a dependency to your application related `build.gradle`
 
 ```gradle
 dependencies {
-    compile 'com.github.eggheadgames:Siren:1.4.+'
+    compile 'com.github.eggheadgames:Siren:1.5.+'
 }
 ```
 
