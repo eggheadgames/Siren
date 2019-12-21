@@ -10,6 +10,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
@@ -280,6 +281,28 @@ public class Siren {
 
         @Override
         protected String doInBackground(String... params) {
+
+            if (!params[0].toLowerCase().contains("http") || !params[0].toLowerCase().contains("https")) {
+                try {
+                    InputStream is = sirenInstance.mActivityRef.get().getAssets().open(params[0]);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        if (isCancelled()) {
+                            br.close();
+                            return null;
+                        }
+                        sb.append(line).append('\n');
+                    }
+                    br.close();
+                    return sb.toString();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
             HttpURLConnection connection = null;
             try {
                 TLSSocketFactory TLSSocketFactory = new TLSSocketFactory();
