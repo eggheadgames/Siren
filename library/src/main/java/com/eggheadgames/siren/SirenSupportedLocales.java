@@ -27,7 +27,8 @@ public enum SirenSupportedLocales {
     SV("sv"),
     TH("th"),
     TR("tr"),
-    ZH("zh");
+    ZH("zh"),
+    ZH-Hant("zh-rTW");
 
     private final String locale;
 
