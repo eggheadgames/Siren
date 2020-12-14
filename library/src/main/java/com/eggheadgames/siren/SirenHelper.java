@@ -1,9 +1,9 @@
 package com.eggheadgames.siren;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
@@ -64,6 +64,7 @@ class SirenHelper {
         return skippedVersion.equals(minAppVersion);
     }
 
+    @SuppressLint("ApplySharedPref")
     void setLastVerificationDate(Context context) {
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putLong(Constants.PREFERENCES_LAST_CHECK_DATE, Calendar.getInstance().getTimeInMillis())
@@ -123,6 +124,7 @@ class SirenHelper {
         }
     }
 
+    @SuppressLint("ApplySharedPref")
     void setVersionSkippedByUser(Context context, String skippedVersion) {
         PreferenceManager.getDefaultSharedPreferences(context).edit()
                 .putString(Constants.PREFERENCES_SKIPPED_VERSION, skippedVersion)

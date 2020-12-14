@@ -1,0 +1,7 @@
+<resources>
+    <string name="update_alert_message" formatted="false">%s的新版本可用。請立即更新到%s版本。</string>
+    <string name="update_available">更新可用</string>
+    <string name="update">更新</string>
+    <string name="next_time">下一次</string>
+    <string name="skip_this_version">跳過此版本</string>
+</resources>
