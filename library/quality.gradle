@@ -1,7 +1,9 @@
-apply plugin: 'findbugs'
+apply plugin: 'spotbugs'
 apply plugin: 'pmd'
 
-findbugs {
+spotbugs {
+  toolVersion = '4.2.0'
+  showProgress = true
   ignoreFailures = false
   reportsDir = file("$project.buildDir/outputs/")
   reportLevel = "medium"
@@ -13,8 +15,8 @@ pmd {
   reportsDir = file("$project.buildDir/outputs/")
 }
 
-task findbugs(type: FindBugs, dependsOn: assembleDebug) {
-  description 'Run findbugs'
+task spotbugs(type: SpotBugsTask, dependsOn: assembleDebug) {
+  description 'Run spotbugs'
   group 'verification'
 
   classes = fileTree("$project.buildDir/intermediates/classes/debug")
@@ -23,7 +25,7 @@ task findbugs(type: FindBugs, dependsOn: assembleDebug) {
 
   effort = 'max'
 
-  excludeFilter = file("$project.projectDir/findbugs_exclude.xml")
+  excludeFilter = file("$project.projectDir/spotbugs_exclude.xml")
 
   reports {
     xml.enabled = false
@@ -45,6 +47,6 @@ task pmd(type: Pmd, dependsOn: assembleDebug) {
 }
 
 check.doLast {
-  project.tasks.getByName("findbugs").execute()
+  project.tasks.getByName("spotbugs").execute()
   project.tasks.getByName("pmd").execute()
 }
