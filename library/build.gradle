@@ -5,11 +5,11 @@ apply from: "quality.gradle"
 group = 'com.github.eggheadgames'
 
 android {
-    compileSdkVersion 25
+    compileSdkVersion 26
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 13
         versionName "1.5.2"
     }
@@ -34,5 +34,5 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleDependency
-    implementation 'com.android.support:appcompat-v7:25.0.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
 }
