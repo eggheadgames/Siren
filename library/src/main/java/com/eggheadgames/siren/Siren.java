@@ -3,7 +3,7 @@ package com.eggheadgames.siren;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import org.json.JSONException;
 import org.json.JSONObject;
