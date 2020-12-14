@@ -15,7 +15,7 @@ pmd {
   reportsDir = file("$project.buildDir/outputs/")
 }
 
-task spotbugs(type: SpotBugsTask, dependsOn: assembleDebug) {
+task spotbugs(type: SpotBugsTask, dependsOn: "assembleDebug") {
   description 'Run spotbugs'
   group 'verification'
 
@@ -33,7 +33,7 @@ task spotbugs(type: SpotBugsTask, dependsOn: assembleDebug) {
   }
 }
 
-task pmd(type: Pmd, dependsOn: assembleDebug) {
+task pmd(type: Pmd, dependsOn: "assembleDebug") {
   description 'Run pmd'
   group 'verification'
 
