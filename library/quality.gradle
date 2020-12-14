@@ -1,37 +1,37 @@
-apply plugin: 'spotbugs'
+// apply plugin: 'spotbugs'
 apply plugin: 'pmd'
 
-spotbugs {
-  toolVersion = '4.2.0'
-  showProgress = true
-  ignoreFailures = false
-  reportsDir = file("$project.buildDir/outputs/")
-  reportLevel = "medium"
-  effort = "max"
-}
+//spotbugs {
+//  toolVersion = '4.2.0'
+//  showProgress = true
+//  ignoreFailures = false
+//  reportsDir = file("$project.buildDir/outputs/")
+//  reportLevel = "medium"
+//  effort = "max"
+//}
 
 pmd {
   ignoreFailures = false
   reportsDir = file("$project.buildDir/outputs/")
 }
 
-task spotbugs(type: SpotBugsTask, dependsOn: "assembleDebug") {
-  description 'Run spotbugs'
-  group 'verification'
-
-  classes = fileTree("$project.buildDir/intermediates/classes/debug")
-  source = fileTree('src/main/java')
-  classpath = files()
-
-  effort = 'max'
-
-  excludeFilter = file("$project.projectDir/spotbugs_exclude.xml")
-
-  reports {
-    xml.enabled = false
-    html.enabled = true
-  }
-}
+//task spotbugs(type: SpotBugsTask, dependsOn: "assembleDebug") {
+//  description 'Run spotbugs'
+//  group 'verification'
+//
+//  classes = fileTree("$project.buildDir/intermediates/classes/debug")
+//  source = fileTree('src/main/java')
+//  classpath = files()
+//
+//  effort = 'max'
+//
+//  excludeFilter = file("$project.projectDir/spotbugs_exclude.xml")
+//
+//  reports {
+//    xml.enabled = false
+//    html.enabled = true
+//  }
+//}
 
 task pmd(type: Pmd, dependsOn: "assembleDebug") {
   description 'Run pmd'
@@ -47,6 +47,6 @@ task pmd(type: Pmd, dependsOn: "assembleDebug") {
 }
 
 check.doLast {
-  project.tasks.getByName("spotbugs").execute()
+  // project.tasks.getByName("spotbugs").execute()
   project.tasks.getByName("pmd").execute()
 }
